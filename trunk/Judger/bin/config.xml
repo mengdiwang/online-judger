@@ -1,0 +1,35 @@
+<cores>	4	</cores>
+<testDataPath> D:\imustoj\testdata </testDataPath>
+
+<mysql>
+	<ip> 127.0.0.1 </ip>
+	<port> 3306 </port>
+	<user> root </user> 
+	<password>  </password>
+	<dbname> acmicpc </dbname>
+</mysql>
+
+<compiler>
+	<gcc> 0 </gcc>
+	<g++> 1 </g++>
+	<pascal> 2 </pascal>
+	<java> 3 </java>
+</compiler>
+
+<judgecode>
+	<pending> 0 </pending>
+	<rejudge> 1 </rejudge>
+	<compiling> 2 </compiling>
+	<running> 3 </running>
+	<accept> 4 </accept>
+	<present_error> 5 </present_error>
+	<wrong_anwser> 6 </wrong_anwser>
+	<time_limited> 7 </time_limited>
+	<memory_limited> 8 </memory_limited>
+	<output_limited> 9 </output_limited>
+	<runtime_error> 10 </runtime_error>
+	<compile_error> 11 </compile_error>
+	<compile_ok> 12 </compile_ok>
+	<system_error> 13 </system_error>
+	<unknow_error> 99 </unknow_error>
+</judgecode>
