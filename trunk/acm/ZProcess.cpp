@@ -368,7 +368,7 @@ bool ZProcessDebug::start()
         }
         else if(de.dwDebugEventCode == EXIT_PROCESS_DEBUG_EVENT) 
         {
-            OutputMsgA("progress exit with code:%u£¬%u", de.u.ExitProcess.dwExitCode, GetLastError());
+            //OutputMsgA("progress exit with code:%u£¬%u", de.u.ExitProcess.dwExitCode, GetLastError());
 
             DebugSetProcessKillOnExit(TRUE);
             DebugActiveProcessStop(de.dwProcessId);
