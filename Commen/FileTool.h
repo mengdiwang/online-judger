@@ -15,12 +15,14 @@ bool fileExist(const tstring & name);
 
 bool removeFile(const tstring & name);
 
+bool makeDirDirect(const tstring & dir);
+
 bool makeDir(const tstring & dir);
 
 void formatSlash(tstring & name);
 
 //格式化文件夹中的斜线。尾部追加斜线。
-void formatDirName(tstring & dirName);
+void formatDirName(tstring & dirName, bool appendSlash=true);
 
 //获得路径中的文件名。即去除路径名，与getFilePath相反。
 tstring getPathFile(const tstring & filename);

@@ -62,6 +62,7 @@ void CoreThreadObj::work()
 
 JudgeCell::JudgeCell(int cores, JudgeFinishCallBack cb)
 {
+	makeDir(_T(WORK_DIR));
     create(cores, cb);
 }
 

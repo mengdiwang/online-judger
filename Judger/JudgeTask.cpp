@@ -31,8 +31,6 @@
 #include "Config.h"
 
 
-#define WORK_DIR        "work\\"
-
 #define MAX_NAME_SIZE  1024
 
 extern Config config;

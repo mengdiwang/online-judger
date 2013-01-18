@@ -29,13 +29,20 @@ bool removeFile(const tstring & name)
     return !!::DeleteFile(name.c_str());
 }
 
+bool makeDirDirect(const tstring & dir)
+{
+	return !!CreateDirectory(dir.c_str(), NULL);
+}
+
 bool makeDir(const tstring & dir)
 {
     if (fileExist(dir))
     {
         return true;
     }
-    tstring parentPath = getFilePath(dir);
+	tstring tempPath = dir;
+	formatDirName(tempPath, false);
+    tstring parentPath = getFilePath(tempPath);
     if (!parentPath.empty())
     {
         if(!makeDir(parentPath))
@@ -43,7 +50,7 @@ bool makeDir(const tstring & dir)
             return false;
         }
     }
-    return !!CreateDirectory(dir.c_str(), NULL);
+    return makeDirDirect(tempPath);
 }
 
 void formatSlash(tstring & name)
@@ -51,17 +58,30 @@ void formatSlash(tstring & name)
     std::replace(name.begin(), name.end(), SLASH_OLD, SLASH_USE);
 }
 
-void formatDirName(tstring & dirName)
+void formatDirName(tstring & dirName, bool appendSlash/*=true*/)
 {
     if (dirName.empty())
     {
         return;
     }
     formatSlash(dirName);
-    if (dirName[dirName.length()-1] != SLASH_USE)
-    {
-        dirName += SLASH_USE;
-    }
+
+	size_t lastIndex = dirName.length()-1;
+
+	if (appendSlash)
+	{
+		if (dirName[lastIndex] != SLASH_USE)
+		{
+			dirName += SLASH_USE;
+		}
+	}
+	else
+	{
+		if (dirName[lastIndex] == SLASH_USE)
+		{
+			dirName.erase(lastIndex);
+		}
+	}
 }
 
 tstring getPathFile(const tstring & filename)
@@ -84,7 +104,7 @@ tstring getFilePath(const tstring & filename)
     size_t pos = tempName.find_last_of(SLASH_USE);
     if (pos == tempName.npos)
     {
-        return tempName;
+        return _T("");
     }
     return tempName.substr(0, pos);
 }
