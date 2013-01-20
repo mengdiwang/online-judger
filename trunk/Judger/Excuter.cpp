@@ -202,7 +202,7 @@ public:
         uint64 maxTime = uint64(task->getLimitTime())*S_100NS; //100ns
 
         Watcher watcher = Watcher(&process, maxTime, maxMemory);
-        process.start();
+        bool noError = process.start();
         watcher.waitExit();
         
         task->setRunTime(int(watcher.getRunTime() / MS_100NS));
@@ -222,7 +222,7 @@ public:
 
         DWORD code = process.getExitCode();
         //最后判短是否运行时错误
-        if (code != 0)
+        if (!noError || code != 0)
         {
             task->setResult(config.JE_RUNTIME);
             return false;
@@ -241,6 +241,8 @@ public:
     virtual bool exc(TaskPtr task)
     {
         int result = compare(task->getOutputTestData(), task->getExeOutputFile());
+		OutputMsg(_T("[%d]match finish:%d.%s"), task->getSolutionID(), result,
+			task->getInputTestData().c_str());
         
         switch(result)
         {

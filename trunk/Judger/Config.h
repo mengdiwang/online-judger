@@ -45,6 +45,8 @@ public:
 
     int JE_PENDING;             //待定
     int JE_ACCEPT;              //接受
+	int JE_COMPILING;			//编译中
+	int JE_RUNNING_JUDGINE;		//运行中
     int JE_REJUDGE;             //等待重判
     int JE_COMPLIE;             //编译错误
     int JE_WRONG_ANWSER;        //答案错误
