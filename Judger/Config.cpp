@@ -31,14 +31,16 @@
 Config::Config()
     : JE_PENDING(0)
     , JE_REJUDGE(1)
-    , JE_ACCEPT(2)
-    , JE_COMPLIE(3)
-    , JE_WRONG_ANWSER(4)
-    , JE_TIME_LIMITED(5)
-    , JE_MEMORY_LIMITED(6)
-    , JE_PRESENT(7)
-    , JE_SYSTEM(8)
-    , JE_RUNTIME(9)
+	, JE_COMPILING(2)
+	, JE_RUNNING_JUDGINE(3)
+    , JE_ACCEPT(4)
+    , JE_COMPLIE(5)
+    , JE_WRONG_ANWSER(6)
+    , JE_TIME_LIMITED(7)
+    , JE_MEMORY_LIMITED(8)
+    , JE_PRESENT(9)
+    , JE_SYSTEM(10)
+    , JE_RUNTIME(11)
     , JE_UNKNOWN(99)
     , CL_GPLUS(0)
     , CL_GCC(1)
@@ -68,6 +70,8 @@ bool Config::loadConfig(LZDataPtr root)
     }
     JE_PENDING = ptr->readInt("pending");
     JE_REJUDGE = ptr->readInt("rejudge");
+	JE_COMPILING = ptr->readInt("compiling");
+	JE_RUNNING_JUDGINE = ptr->readInt("running");
     JE_ACCEPT = ptr->readInt("accept");             //½ÓÊÜ
     JE_COMPLIE = ptr->readInt("compile_error");             //±àÒë´íÎó
     JE_WRONG_ANWSER = ptr->readInt("wrong_anwser");        //´ğ°¸´íÎó

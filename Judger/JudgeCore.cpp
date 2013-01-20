@@ -67,7 +67,7 @@ bool JudgeCore::judge(TaskPtr task)
 
     onTaskFinish(task);
 
-    return doCleanUp(task);
+	return doCleanUp(task);
 }
 
 bool JudgeCore::doJudge(TaskPtr task)
@@ -104,7 +104,14 @@ bool JudgeCore::doJudge(TaskPtr task)
             {
                 ++accepted;
             }
-        }
+		}
+
+		//强制删除临时文件
+		if(!safeRemoveFile(task->getExeOutputFile()))
+		{
+			task->setResult(config.JE_SYSTEM);
+			return false;
+		}
 
         //记录最大占用时间和内存
         if (maxTime < task->getRunTime())
@@ -129,7 +136,10 @@ bool JudgeCore::doJudge(TaskPtr task)
 
 bool JudgeCore::doCleanUp(TaskPtr task)
 {
-    safeRemoveFile(task->getCodeFile());
+    if(!safeRemoveFile(task->getCodeFile()))
+	{
+		return false;
+	}
 
     if(!safeRemoveFile(task->getCompileOutputFile()))
     {

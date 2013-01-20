@@ -42,7 +42,10 @@ const std::string sqlSelectProblem = "SELECT solution.solution_id, solution.prob
     "problem.time_limit, problem.memory_limit, solution.result "
     "FROM solution, problem "
     "WHERE solution.problem_id = problem.problem_id and "
-    "(solution.result=%d or solution.result=%d) ";
+    "(solution.result=%d or solution.result=%d) limit 20";
+
+const std::string sqlUpdateSolutionCompiling = "UPDATE `solution` SET `result`=%d "
+	"WHERE `solution_id` = %d";
 
 const std::string sqlUpdateSolution = "UPDATE `solution` SET `result`=%d, `time`=%d, "
     "`memory`=%d, `judgetime`=NOW(), `pass_rate`=%f "
@@ -87,7 +90,6 @@ const std::string sqlUpdateProblemSubmit = "UPDATE `problem` SET `submit`="
 DBManager::DBManager(ZMySqlPtr sql, RecivTaskCallBack recivCB)
     : m_sql(sql)
     , m_recivCB(recivCB)
-    , m_workRef(0)
     , m_running(true)
 {
     m_readThread = new ZThreadEx<DBManager>(this, &DBManager::doRead);
@@ -108,25 +110,6 @@ void DBManager::stop()
     m_writeThread = NULL;
 }
 
-bool DBManager::isJudging()
-{
-    ZLockHolder holder(&m_workLock);
-    return m_workRef != 0;
-}
-
-void DBManager::addWorkRef()
-{
-    m_workLock.lock();
-    ++m_workRef;
-    m_workLock.unlock();
-}
-
-void DBManager::delWorkRef()
-{
-    m_workLock.lock();
-    --m_workRef;
-    m_workLock.unlock();
-}
 
 void DBManager::tryLoadCode(TaskPtr task)
 {
@@ -176,11 +159,6 @@ void DBManager::doRead()
     {
         Sleep(1000);
 
-        if (isJudging())
-        {
-            continue;
-        }
-
         sprintf_s(buffer, 1024, sqlSelectProblem.c_str(), config.JE_PENDING, config.JE_REJUDGE);
 
         ECHO_SQL_ERROR_2(m_sql->query(buffer), break);
@@ -191,7 +169,7 @@ void DBManager::doRead()
             continue;
         }
 
-        if (g_enableDBMDebugMsg)
+        if (res->rows() > 0 && g_enableDBMDebugMsg)
         {
             int cols = res->cols();
             for (int i=0; i<cols; ++i)
@@ -220,7 +198,7 @@ void DBManager::doRead()
 #else
             std::string userName = row->col(2).asString();
 #endif
-            
+
             TaskPtr task = new TaskBase(
                 row->col(0).asInt(),    //solutionid
                 row->col(1).asInt(),    //problemid
@@ -233,9 +211,11 @@ void DBManager::doRead()
 
             tryLoadCode(task);
 
-            onRecivTask(task);
+			sprintf_s(buffer, 1024, sqlUpdateSolutionCompiling.c_str(), 
+				config.JE_COMPILING, task->getSolutionID());
+			ECHO_SQL_ERROR_2(m_sql->query(buffer), break);
 
-            addWorkRef();
+            onRecivTask(task);
         }
     }
     XWRITE_LOGA("读数据库线程退出。");
@@ -262,8 +242,6 @@ void DBManager::doWrite()
         updateProblem(task);
 
         updateInfo(task);
-
-        delWorkRef();
     }
     XWRITE_LOGA("写数据库线程退出。");
 }

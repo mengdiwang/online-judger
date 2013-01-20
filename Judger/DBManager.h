@@ -52,13 +52,6 @@ protected:
 
     void tryLoadCode(TaskPtr task);
 
-    //是否正在评判。如果正在评判，则不能继续读取数据，因为结果还未写入数据库。
-    bool isJudging();
-
-    void addWorkRef();
-
-    void delWorkRef();
-
     TaskPtr getFinishTask(){ return m_finishTask.get(); }
 
     void updateSolution(TaskPtr task);
