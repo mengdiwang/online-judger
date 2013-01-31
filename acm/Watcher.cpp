@@ -13,6 +13,7 @@
 #include "Watcher.h"
 
 #include <psapi.h>
+#pragma comment(lib, "psapi")
 
 //获得进程占用内存
 uint64 getProcessMemory(HANDLE hprocess)

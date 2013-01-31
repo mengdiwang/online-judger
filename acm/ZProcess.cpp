@@ -9,8 +9,6 @@
 #include "ZProcess.h"
 #include "Utilities.h"
 
-#include <psapi.h>
-#pragma comment(lib,"psapi.lib")
 
 #define BUFSIZE 1024
 
